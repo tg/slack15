@@ -1,4 +1,4 @@
-# slack15 – from log15 to Slack [![GoDoc](https://godoc.org/github.com/tg/slack15?status.svg)](https://godoc.org/github.com/tg/pgpass)
+# slack15 – from log15 to Slack [![GoDoc](https://godoc.org/github.com/tg/slack15?status.svg)](https://godoc.org/github.com/tg/slack15)
 
 Say hello to Slack handler for [log15](https://github.com/inconshreveable/log15) and
 send log messages in Go directly to Slack via [incoming webhook](https://api.slack.com/incoming-webhooks).
