@@ -19,23 +19,23 @@ type Envelope struct {
 }
 
 // Msg represents Slack message
-type Msg struct {
+type message struct {
 	Envelope
 	Text        string       `json:"text"`
-	Attachments []Attachment `json:"attachments,omitempty"`
+	Attachments []attachment `json:"attachments,omitempty"`
 }
 
 // Attachment represents attachment to a message
-type Attachment struct {
+type attachment struct {
 	Fallback string  `json:"fallback,omitempty"` // Required plain-text summary of the attachment.
 	Color    string  `json:"color,omitempty"`
 	Pretext  string  `json:"pretext,omitempty"`
 	Text     string  `json:"text,omitempty"`
-	Fields   []Field `json:"fields,omitempty"`
+	Fields   []field `json:"fields,omitempty"`
 }
 
 // Field represents field withing an attachment
-type Field struct {
+type field struct {
 	Title string `json:"title"`
 	Value string `json:"value"`
 	Short bool   `json:"short,omitempty"`

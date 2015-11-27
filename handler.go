@@ -106,9 +106,9 @@ func (h *Handler) Log(r *log15.Record) error {
 	return err
 }
 
-func (h *Handler) getMsg(r *log15.Record) (*Msg, error) {
+func (h *Handler) getMsg(r *log15.Record) (*message, error) {
 	var err error
-	msg := &Msg{
+	msg := &message{
 		Envelope: h.Envelope,
 	}
 
@@ -126,18 +126,18 @@ func (h *Handler) getMsg(r *log15.Record) (*Msg, error) {
 
 	if h.Formatter != nil {
 		txt := string(h.Formatter.Format(r))
-		msg.Attachments = []Attachment{{
+		msg.Attachments = []attachment{{
 			Text:     txt,
 			Fallback: txt,
 			Color:    color,
 		}}
 	} else {
 		ctx := newCtxReader(r.Ctx)
-		fields := make([]Field, 0, ctx.Pairs()+1)
+		fields := make([]field, 0, ctx.Pairs()+1)
 
 		for ctx.Next() {
 			v := fmt.Sprint(ctx.Value())
-			fields = append(fields, Field{
+			fields = append(fields, field{
 				Title: ctx.Key(),
 				Value: v,
 				Short: true,
@@ -145,7 +145,7 @@ func (h *Handler) getMsg(r *log15.Record) (*Msg, error) {
 		}
 		err = ctx.Err()
 
-		msg.Attachments = []Attachment{{
+		msg.Attachments = []attachment{{
 			Text:     r.Msg,
 			Fallback: string(log15.LogfmtFormat().Format(r)),
 			Fields:   fields,
