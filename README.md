@@ -12,3 +12,5 @@ log.SetHandler(&slack15.Handler{
 })
 log.Info("Whaam!", "who", "Roy Lichtenstein", "when", 1963)
 ```
+
+![screenshot](https://www.dropbox.com/s/0v27ia73ox100gd/github_slack15.png?raw=1)
