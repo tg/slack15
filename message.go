@@ -50,9 +50,9 @@ func Long(value interface{}) Field {
 type message struct {
 	Envelope
 	Attachments [1]struct {
-		Text     string  `json:"text,omitempty"`
+		Text     string  `json:"text"`
 		Fallback string  `json:"fallback,omitempty"` // Required plain-text summary
 		Color    string  `json:"color,omitempty"`
 		Fields   []Field `json:"fields,omitempty"`
-	} `json:"attachments,omitempty"`
+	} `json:"attachments"`
 }
