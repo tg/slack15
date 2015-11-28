@@ -19,14 +19,18 @@ var ErrNoWebHook = errors.New("No Slack WebHook URL specified")
 
 // Handler implements log15.Handler interface
 type Handler struct {
+	// Envelope allows to overwrite webhook's defaults
+	Envelope
+
 	// WebHook URL (if empty taken from $SLACK_WEBHOOK)
 	URL string
 
 	// Message formatter – if nil default will be used
 	Formatter log15.Format
 
-	// Envelope allowing to overwrite webhook's defaults
-	Envelope
+	// Client is used for HTTP requests to Slack API.
+	// If nil, http.DefaultClient is used.
+	Client *http.Client
 }
 
 // Log logs records by sending it to Slack
@@ -34,6 +38,7 @@ func (h *Handler) Log(r *log15.Record) error {
 	msg, err := h.getMsg(r)
 	// send message anyway if error occured
 
+	// Take URL from handler or environment
 	url := h.URL
 	if url == "" {
 		url = os.Getenv("SLACK_WEBHOOK_URL")
@@ -47,7 +52,12 @@ func (h *Handler) Log(r *log15.Record) error {
 		return err
 	}
 
-	resp, err := http.Post(url, "", bytes.NewReader(payload))
+	c := h.Client
+	if c == nil {
+		c = http.DefaultClient
+	}
+
+	resp, err := c.Post(url, "", bytes.NewReader(payload))
 	if err != nil {
 		return err
 	}
