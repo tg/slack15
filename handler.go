@@ -73,11 +73,6 @@ func newCtxReader(ctx []interface{}) *ctxReader {
 	return &ctxReader{ctx: ctx}
 }
 
-// Pairs returns number of key-value pairs left
-func (r *ctxReader) Pairs() int {
-	return len(r.ctx) / 2
-}
-
 // Next process next key-value pair.
 // Note true can be returned even if internal error is set.
 func (r *ctxReader) Next() bool {
@@ -114,6 +109,8 @@ func (h *Handler) getMsg(r *log15.Record) (*message, error) {
 		Envelope: h.Envelope,
 	}
 
+	// Choose message color depending on log level
+	// (this is imitating colors from log15.TerminalFormat)
 	color := "#32C8C8" // blue
 	switch r.Lvl {
 	case log15.LvlInfo:
@@ -125,34 +122,34 @@ func (h *Handler) getMsg(r *log15.Record) (*message, error) {
 	case log15.LvlCrit:
 		color = "#C832C8" // purple
 	}
+	msg.Attachments[0].Color = color
 
 	if h.Formatter != nil {
 		txt := string(h.Formatter.Format(r))
-		msg.Attachments = []attachment{{
-			Text:     txt,
-			Fallback: txt,
-			Color:    color,
-		}}
+		msg.Attachments[0].Text = txt
+		msg.Attachments[0].Fallback = txt
 	} else {
 		ctx := newCtxReader(r.Ctx)
-		fields := make([]field, 0, ctx.Pairs()+1)
+		fields := make([]Field, 0, len(r.Ctx)/2)
 
 		for ctx.Next() {
-			v := fmt.Sprint(ctx.Value())
-			fields = append(fields, field{
-				Title: ctx.Key(),
-				Value: v,
-				Short: true,
-			})
+			v := ctx.Value()
+			// See if value is a Field; if not, fill with defaults
+			f, ok := v.(Field)
+			if !ok {
+				f.Value = fmt.Sprint(v)
+				f.Short = true
+			}
+			if f.Title == "" {
+				f.Title = ctx.Key()
+			}
+			fields = append(fields, f)
 		}
 		err = ctx.Err()
 
-		msg.Attachments = []attachment{{
-			Text:     r.Msg,
-			Fallback: string(log15.LogfmtFormat().Format(r)),
-			Fields:   fields,
-			Color:    color,
-		}}
+		msg.Attachments[0].Text = r.Msg
+		msg.Attachments[0].Fallback = string(log15.LogfmtFormat().Format(r))
+		msg.Attachments[0].Fields = fields
 	}
 
 	return msg, err
