@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -64,7 +66,9 @@ func (h *Handler) Log(r *log15.Record) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("slack responsed with code %d", resp.StatusCode)
+		// Report up to 1kB of response body
+		body, _ := ioutil.ReadAll(io.LimitReader(resp.Body, 1024))
+		err = fmt.Errorf("slack responded with %d: %s", resp.StatusCode, body)
 	}
 
 	return err
