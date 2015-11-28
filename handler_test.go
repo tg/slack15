@@ -1,8 +1,8 @@
 package slack15_test
 
 import (
-	"github.com/inconshreveable/log15"
 	"github.com/tg/slack15"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 func ExampleHandler() {
