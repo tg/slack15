@@ -107,7 +107,7 @@ func (h *Handler) getMsg(r *log15.Record) *message {
 			// See if value is a Field; if not, fill with defaults
 			f, ok := v.(Field)
 			if !ok {
-				f.Value = fmt.Sprint(v)
+				f.Value = fmt.Sprintf("%+v", v)
 				f.Short = true
 			}
 			if f.Title == "" {
