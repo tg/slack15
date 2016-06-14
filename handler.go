@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"os"
 
-	"gopkg.in/inconshreveable/log15.v2"
+	"github.com/inconshreveable/log15"
 )
 
 // ErrNoWebHook is returned if no WebHook URL is provided nor it
