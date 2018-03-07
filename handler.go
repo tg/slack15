@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/inconshreveable/log15"
+	"github.com/tg/log15"
 )
 
 // ErrNoWebHook is returned if no WebHook URL is provided nor it

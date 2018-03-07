@@ -1,7 +1,7 @@
 package slack15_test
 
 import (
-	"github.com/inconshreveable/log15"
+	"github.com/tg/log15"
 	"github.com/tg/slack15"
 )
 
